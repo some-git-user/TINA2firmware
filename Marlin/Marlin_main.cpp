@@ -5289,7 +5289,11 @@ void home_all_axes() { gcode_G28(true); }
                 SERIAL_ECHOLNPAIR("  Discrepancy:", simple_z - converted[Z_AXIS]);
               }
             #endif
-			job_recovery_info.zoffset = simple_z - converted[Z_AXIS];		
+
+            #ifdef job_recovery_info
+			        job_recovery_info.zoffset = simple_z - converted[Z_AXIS];		
+            #endif
+
             converted[Z_AXIS] = simple_z;
           }
 

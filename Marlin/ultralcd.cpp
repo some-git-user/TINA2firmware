@@ -4905,122 +4905,124 @@ void lcd_update() {
 
 	} // ELAPSED(ms, next_lcd_update_ms)
 
-	if (wtvar_save_stage == 1)
-	{
-		if ((planner.has_blocks_queued() == false) && (commands_in_queue == 0))
+	#ifdef job_recovery_info
+		if (wtvar_save_stage == 1)
 		{
-			if (wtvar_paused)
-				COPY(job_recovery_info.current_position, resume_position);
-			else
-				COPY(job_recovery_info.current_position, current_position);
-
-			enqueue_and_echo_commands_P(PSTR("G28 R0 X Y"));
-
-			SERIAL_PROTOCOLPAIR("Z:", job_recovery_info.current_position[Z_AXIS]);
-
-			wtvar_save_stage = 2;
-		}
-	}
-	else if (wtvar_save_stage == 2)
-	{
-		if ((planner.has_blocks_queued() == false) && (commands_in_queue == 0))
-		{
-			job_recovery_info.active_hotend = active_extruder;
-
-			COPY(job_recovery_info.target_temperature, thermalManager.target_temperature);
-
-			//job_recovery_info.target_temperature_bed = thermalManager.target_temperature_bed;
-
-			// Commands in the queue
-			job_recovery_info.cmd_queue_index_r = 0;
-			job_recovery_info.commands_in_queue = 0;
-
-			// Elapsed print job time
-			job_recovery_info.print_job_elapsed = print_job_timer.duration();
-
-			// SD file position
-			card.getAbsFilename(job_recovery_info.sd_filename);
-			job_recovery_info.sdpos = card.getIndex();
-
-			card.openJobRecoveryFile(false);
-			(void)card.saveJobRecoveryInfo();
-
-			wtvar_save_stage = 3;
-		}
-	}
-	else if (wtvar_save_stage == 3)
-	{
-		while (1)
-		{
-			delay(500);
-#if ENABLED(USE_WATCHDOG)
-			watchdog_reset();
-#endif
-		} // Wait for reset
-	}
-
-	char headgcode[40] = { 0 }, flchar[10] = { 0 };
-	if (wtvar_resume_stage == 1)
-	{
-		if ((thermalManager.current_temperature[0] >= thermalManager.target_temperature[0] - 2) &&
-			(thermalManager.current_temperature[0] <= thermalManager.target_temperature[0] + 2) &&
-			(thermalManager.current_temperature[0] > 180))
-		{
-			set_destination_from_current();
-			destination[E_CART] += 20 / planner.e_factor[active_extruder];
-			planner.buffer_line_kinematic(destination, 3, active_extruder);
-			set_current_from_destination();
-
-			wtvar_resume_stage = 2;
-		}
-	}
-	else if (wtvar_resume_stage == 2)
-	{
-		if ((planner.has_blocks_queued() == false) && (commands_in_queue == 0))
-		{
-
-			memset(headgcode, 0, sizeof(headgcode));
-			strcat(headgcode, "G92.0 Z");
-			dtostrf(job_recovery_info.current_position[Z_AXIS], 3, 3, flchar);
-			strcat(headgcode, flchar);
-
-			enqueue_and_echo_command(headgcode);
-
-			memset(headgcode, 0, sizeof(headgcode));
-			strcat(headgcode, "G92.0 E");
-			dtostrf(job_recovery_info.current_position[E_CART], 3, 3, flchar);
-			strcat(headgcode, flchar);
-			enqueue_and_echo_command(headgcode);
-
-			uint8_t r, c;
-			r = job_recovery_info.cmd_queue_index_r;
-			c = job_recovery_info.commands_in_queue;
-
-			while (c--)
+			if ((planner.has_blocks_queued() == false) && (commands_in_queue == 0))
 			{
-				enqueue_and_echo_command(job_recovery_info.command_queue[r]);
-				r = (r + 1) % BUFSIZE;
+				if (wtvar_paused)
+					COPY(job_recovery_info.current_position, resume_position);
+				else
+					COPY(job_recovery_info.current_position, current_position);
+
+				enqueue_and_echo_commands_P(PSTR("G28 R0 X Y"));
+
+				SERIAL_PROTOCOLPAIR("Z:", job_recovery_info.current_position[Z_AXIS]);
+
+				wtvar_save_stage = 2;
 			}
-
-			wtvar_resume_stage = 3;
 		}
-	}
-	else if (wtvar_resume_stage == 3)
-	{
-		if ((planner.has_blocks_queued() == false) && (commands_in_queue == 0))
+		else if (wtvar_save_stage == 2)
 		{
-			memset(headgcode, 0, sizeof(headgcode));
-			sprintf_P(headgcode, PSTR("M23 %s"), job_recovery_info.sd_filename);
-			enqueue_and_echo_command(headgcode);
+			if ((planner.has_blocks_queued() == false) && (commands_in_queue == 0))
+			{
+				job_recovery_info.active_hotend = active_extruder;
 
-			memset(headgcode, 0, sizeof(headgcode));
-			sprintf_P(headgcode, PSTR("M24 S%ld T%ld"), job_recovery_info.sdpos, job_recovery_info.print_job_elapsed);
-			enqueue_and_echo_command(headgcode);
+				COPY(job_recovery_info.target_temperature, thermalManager.target_temperature);
 
-			wtvar_resume_stage = 0;
-			lcd_return_to_status();
+				//job_recovery_info.target_temperature_bed = thermalManager.target_temperature_bed;
+
+				// Commands in the queue
+				job_recovery_info.cmd_queue_index_r = 0;
+				job_recovery_info.commands_in_queue = 0;
+
+				// Elapsed print job time
+				job_recovery_info.print_job_elapsed = print_job_timer.duration();
+
+				// SD file position
+				card.getAbsFilename(job_recovery_info.sd_filename);
+				job_recovery_info.sdpos = card.getIndex();
+
+				card.openJobRecoveryFile(false);
+				(void)card.saveJobRecoveryInfo();
+
+				wtvar_save_stage = 3;
+			}
 		}
-	}
+		else if (wtvar_save_stage == 3)
+		{
+			while (1)
+			{
+				delay(500);
+				#if ENABLED(USE_WATCHDOG)
+					watchdog_reset();
+				#endif
+			} // Wait for reset
+		}
+
+		char headgcode[40] = { 0 }, flchar[10] = { 0 };
+		if (wtvar_resume_stage == 1)
+		{
+			if ((thermalManager.current_temperature[0] >= thermalManager.target_temperature[0] - 2) &&
+				(thermalManager.current_temperature[0] <= thermalManager.target_temperature[0] + 2) &&
+				(thermalManager.current_temperature[0] > 180))
+			{
+				set_destination_from_current();
+				destination[E_CART] += 20 / planner.e_factor[active_extruder];
+				planner.buffer_line_kinematic(destination, 3, active_extruder);
+				set_current_from_destination();
+
+				wtvar_resume_stage = 2;
+			}
+		}
+		else if (wtvar_resume_stage == 2)
+		{
+			if ((planner.has_blocks_queued() == false) && (commands_in_queue == 0))
+			{
+
+				memset(headgcode, 0, sizeof(headgcode));
+				strcat(headgcode, "G92.0 Z");
+				dtostrf(job_recovery_info.current_position[Z_AXIS], 3, 3, flchar);
+				strcat(headgcode, flchar);
+
+				enqueue_and_echo_command(headgcode);
+
+				memset(headgcode, 0, sizeof(headgcode));
+				strcat(headgcode, "G92.0 E");
+				dtostrf(job_recovery_info.current_position[E_CART], 3, 3, flchar);
+				strcat(headgcode, flchar);
+				enqueue_and_echo_command(headgcode);
+
+				uint8_t r, c;
+				r = job_recovery_info.cmd_queue_index_r;
+				c = job_recovery_info.commands_in_queue;
+
+				while (c--)
+				{
+					enqueue_and_echo_command(job_recovery_info.command_queue[r]);
+					r = (r + 1) % BUFSIZE;
+				}
+
+				wtvar_resume_stage = 3;
+			}
+		}
+		else if (wtvar_resume_stage == 3)
+		{
+			if ((planner.has_blocks_queued() == false) && (commands_in_queue == 0))
+			{
+				memset(headgcode, 0, sizeof(headgcode));
+				sprintf_P(headgcode, PSTR("M23 %s"), job_recovery_info.sd_filename);
+				enqueue_and_echo_command(headgcode);
+
+				memset(headgcode, 0, sizeof(headgcode));
+				sprintf_P(headgcode, PSTR("M24 S%ld T%ld"), job_recovery_info.sdpos, job_recovery_info.print_job_elapsed);
+				enqueue_and_echo_command(headgcode);
+
+				wtvar_resume_stage = 0;
+				lcd_return_to_status();
+			}
+		}
+	#endif
 }
 
 void lcd_finishstatus(const bool persist = false) {
@@ -5764,22 +5766,24 @@ void wt_safe_off_menu()
 extern uint8_t job_saveoff;
 void wt_saveoff()
 {
-	//job_saveoff = 1;
-	//abort_sd_printing = true;
-	if (!++job_recovery_info.valid_head) ++job_recovery_info.valid_head; // non-zero in sequence
-	job_recovery_info.valid_foot = job_recovery_info.valid_head;
-	if (card.sdprinting)
-	{
-		card.pauseSDPrint();
-		wtvar_paused = false;
-	}
-	else
-	{
-		wtvar_paused = true;
-	}
-	wtvar_save_stage = 1;
+	#ifdef job_recovery_info
+		//job_saveoff = 1;
+		//abort_sd_printing = true;
+		if (!++job_recovery_info.valid_head) ++job_recovery_info.valid_head; // non-zero in sequence
+		job_recovery_info.valid_foot = job_recovery_info.valid_head;
+		if (card.sdprinting)
+		{
+			card.pauseSDPrint();
+			wtvar_paused = false;
+		}
+		else
+		{
+			wtvar_paused = true;
+		}
+		wtvar_save_stage = 1;
 
-	menu_action_submenu(wt_safe_off_menu);
+		menu_action_submenu(wt_safe_off_menu);
+	#endif
 }
 
 float zoffset_beginZpos = 0;
