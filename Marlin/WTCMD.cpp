@@ -1,6 +1,6 @@
 /**
-* Copyright (C) 2019 WEEDO3D Perron
-*/
+ * Copyright (C) 2019 WEEDO3D Perron
+ */
 
 #include "WTCMD.h"
 #include "parser.h"
@@ -13,18 +13,18 @@
 #include "serial.h"
 #include "WTGcodeinfo.h"
 
-#define ACTION_ON_PAUSE		"pause"
-#define ACTION_ON_PAUSED	"paused"
-#define ACTION_ON_RESUME	"resume"
-#define ACTION_ON_CANCEL	"cancel"
-#define ACTION_ON_DISCONNECT	"disconnect"
-#define ACTION_ON_START       "start"
-#define ACTION_ON_FINISH      "finish"
+#define ACTION_ON_PAUSE "pause"
+#define ACTION_ON_PAUSED "paused"
+#define ACTION_ON_RESUME "resume"
+#define ACTION_ON_CANCEL "cancel"
+#define ACTION_ON_DISCONNECT "disconnect"
+#define ACTION_ON_START "start"
+#define ACTION_ON_FINISH "finish"
 
-#define EEPROM_HOST_MODE				1000
+#define EEPROM_HOST_MODE 1000
 
-#define STATUS_CHECK_TIME_INTERVAL		1000
-#define STATUS_TOGGLE_TIME_INTERVAL		5000
+#define STATUS_CHECK_TIME_INTERVAL 1000
+#define STATUS_TOGGLE_TIME_INTERVAL 5000
 
 extern void wtlcd_welcome1();
 extern void wtlcd_welcome2();
@@ -44,7 +44,7 @@ extern InPacket inp3;
 
 WT_STATUS wt_machineStatus = WT_STATUS::IDLE;
 
-uint8_t wt_onlineprinting = SPARK_IDLE;		// 0 = not printing, 1 = paused, 2 = printing
+uint8_t wt_onlineprinting = SPARK_IDLE; // 0 = not printing, 1 = paused, 2 = printing
 
 extern Buzzer buzzer;
 
@@ -152,10 +152,10 @@ void DisableDebugMenu()
 	lcd_return_to_status();
 }
 
-static void CheckFileExist(const char * name)
+static void CheckFileExist(const char *name)
 {
 	uint32_t ret;
-	
+
 	ret = card.checkFileExist(name);
 
 	SERIAL_PROTOCOLLNPAIR(MSG_CHECKFILESIZE, ret);
@@ -185,7 +185,7 @@ void GetMachineStatus()
 
 static void ParseIPAddress()
 {
-	char* tempS;
+	char *tempS;
 	tempS = parser.string_arg;
 
 	if (strstr(tempS, "Disconnected") != NULL)
@@ -234,7 +234,8 @@ void wt_spark_end()
 void wt_spark_cancel()
 {
 	lcd_sdcard_stop();
-	while (1);
+	while (1)
+		;
 }
 
 void wt_spark_pause()
@@ -280,59 +281,59 @@ void WTCMD_Process()
 {
 	switch (parser.codenum)
 	{
-	case 1:		
+	case 1:
 		wt_spark_begin();
 		break;
 
-	case 2:		
+	case 2:
 		wt_spark_end();
 		break;
 
-	case 3:		
+	case 3:
 		wt_spark_cancel();
 		break;
 
-	case 4:		
+	case 4:
 		wt_spark_pause();
 		break;
 
-	case 5:		
+	case 5:
 		wt_spark_resume();
 		break;
 
-	case 6:		
+	case 6:
 		lcd_setstatusPGM(MMSG_OCTOPRINT_OPEN, -1);
 		break;
 
-	case 7:		
+	case 7:
 		lcd_setstatusPGM(MMSG_OCTOPRINT_CLOSE, -1);
 		break;
 
-	case 100:	
+	case 100:
 		Show_WelcomeScreen1();
 		break;
 
-	case 101:	
+	case 101:
 		Show_WelcomeScreen2();
 		break;
 
-	case 102:	
+	case 102:
 		Show_WelcomeScreen3();
 		break;
 
-	case 103:	
+	case 103:
 		Show_WelcomeScreen4();
 		break;
 
-	case 104:	
+	case 104:
 		ShowDebugMenu();
 		break;
 
-	case 105:  
+	case 105:
 		DisableDebugMenu();
 		break;
 
-	case 106:		
+	case 106:
 		ZERO(uploadFilename);
 		if (strlen(parser.string_arg) <= FILENAME_LENGTH)
 			strcpy(uploadFilename, parser.string_arg);
@@ -341,33 +342,34 @@ void WTCMD_Process()
 		wtlcd_ShowUploadingScreen();
 		break;
 
-	case 107:		
+	case 107:
 		wt_CloseUploadScreen();
 		break;
 
-	case 200:	
+	case 200:
 		CheckFileExist(parser.string_arg);
 		break;
 
-	case 201:	
+	case 201:
 		GetMachineStatus();
 		break;
 
-	case 202:	
+	case 202:
 		card.appendFile(parser.string_arg);
 		break;
 
-	case 203:	
+	case 203:
 		wt_restart();
-		while (1);
+		while (1)
+			;
 		break;
 
-	case 204:	
+	case 204:
 		ParseIPAddress();
 		getIPAddress = true;
 		break;
 
-	case 205:	
+	case 205:
 		memset(esp32_serial, 0, 16);
 		if (strlen(parser.string_arg) <= 16)
 			strcpy(esp32_serial, parser.string_arg);
@@ -375,7 +377,7 @@ void WTCMD_Process()
 			strncpy(esp32_serial, parser.string_arg, 16);
 		break;
 
-	case 206:	
+	case 206:
 		memset(esp32_version, 0, 8);
 		if (strlen(parser.string_arg) <= 8)
 			strcpy(esp32_version, parser.string_arg);
@@ -383,7 +385,7 @@ void WTCMD_Process()
 			strncpy(esp32_version, parser.string_arg, 8);
 		break;
 
-	case 207:	
+	case 207:
 		memset(esp32_name, 0, 12);
 		if (strlen(parser.string_arg) <= 12)
 			strcpy(esp32_name, parser.string_arg);
@@ -391,7 +393,7 @@ void WTCMD_Process()
 			strncpy(esp32_name, parser.string_arg, 12);
 		break;
 
-	case 208:	
+	case 208:
 		memset(esp32_message, 0, 22);
 		if (strlen(parser.string_arg) <= 22)
 			strcpy(esp32_message, parser.string_arg);
@@ -399,60 +401,60 @@ void WTCMD_Process()
 			strncpy(esp32_message, parser.string_arg, 22);
 		break;
 
-	case 209:		
+	case 209:
 		lcd_sdcard_stop();
 		break;
 
-	case 210:		
+	case 210:
 		WT_WIFI_Default();
 		break;
 
-	case 211:		
+	case 211:
 		enqueue_and_echo_commands_P(PSTR("M104 T0 S210"));
 		enqueue_and_echo_commands_P(PSTR("M701 T0"));
 		enqueue_and_echo_commands_P(PSTR("M104 S0"));
 		break;
 
-	case 212:		
+	case 212:
 		enqueue_and_echo_commands_P(PSTR("M104 T0 S210"));
 		enqueue_and_echo_commands_P(PSTR("M702 T0"));
 		enqueue_and_echo_commands_P(PSTR("M104 S0"));
 		break;
 
-	case 213:	
+	case 213:
 		ParseTBState();
 		break;
 
-	case 300:		
+	case 300:
 		memset(wifi_ssid, 0, 30);
 		strcpy(wifi_ssid, parser.string_arg);
 		break;
 
-	case 301:		//
+	case 301: //
 		memset(wifi_pwd, 0, 30);
 		strcpy(wifi_pwd, parser.string_arg);
 		break;
 
-	case 302:			
+	case 302:
 		WT_WIFI_Join();
 		break;
 
 	default:
-		 parser.unknown_command_error();
-
+		parser.unknown_command_error();
 	}
 }
 
-uint8_t extractFront(const char* source, char* ident, char* valString)
+uint8_t extractFront(const char *source, char *ident, char *valString)
 {
 	int len1 = strlen(source);
 	int len2 = strlen(ident);
 
-	if (len1 < len2) return 0;
+	if (len1 < len2)
+		return 0;
 
 	int start;
 	int i = 0;
-	const char* sp;
+	const char *sp;
 	sp = source;
 	do
 	{
@@ -472,7 +474,7 @@ uint8_t extractFront(const char* source, char* ident, char* valString)
 			sp++;
 			i++;
 		}
-		if (i > len2)		
+		if (i > len2)
 		{
 			sp = source;
 			sp += len2 + start;
@@ -491,16 +493,17 @@ void wt_restart()
 {
 	clear_command_queue();
 	safe_delay(500);
-	asm volatile ("jmp 0");
+	asm volatile("jmp 0");
 };
 
 uint8_t wt_get_hostmode(void)
 {
 	if (wt_hostmode_init == 0)
-	{	
+	{
 		wt_hostmode_init = 1;
 		wt_hostmode = eeprom_read_byte(EEPROM_HOST_MODE);
-		if (wt_hostmode > 1) wt_hostmode = HOST_WIIBUILDER;
+		if (wt_hostmode > 1)
+			wt_hostmode = HOST_WIIBUILDER;
 	}
 
 	return wt_hostmode;
@@ -541,7 +544,8 @@ void calc_local_printing_time(void)
 
 		long est_last = est_total - elapsed;
 		long slicing_last = gcodeinfo.info.i_totaltime - elapsed;
-		if (slicing_last < 0) slicing_last = 0;
+		if (slicing_last < 0)
+			slicing_last = 0;
 
 		gcodeinfo.info.i_lefttime = (long)((float)est_last * p + (float)slicing_last * (1 - p));
 	}
@@ -553,7 +557,8 @@ void calc_local_printing_time(void)
 			est_total = 0;
 
 		gcodeinfo.info.i_lefttime = est_total - elapsed;
-		if (gcodeinfo.info.i_lefttime < 0) gcodeinfo.info.i_lefttime = 0;
+		if (gcodeinfo.info.i_lefttime < 0)
+			gcodeinfo.info.i_lefttime = 0;
 	}
 }
 
@@ -561,11 +566,11 @@ void wt_loopaction(void)
 {
 	uint32_t nowtime = getcurrenttime();
 	if (nowtime > wt_status_check)
-	{	
+	{
 		wt_status_check = nowtime + STATUS_CHECK_TIME_INTERVAL;
 
 		if (wt_machineStatus == WT_STATUS::PRINTING)
-		{	
+		{
 			if (nowtime > wt_status_togle)
 			{
 				wt_status_togle = nowtime + STATUS_TOGGLE_TIME_INTERVAL;
@@ -586,9 +591,8 @@ void wt_loopaction(void)
 			wtvar_status_time = 1;
 		}
 		else
-		{	
+		{
 			wtvar_status_time = 0;
 		}
 	}
-
 }
