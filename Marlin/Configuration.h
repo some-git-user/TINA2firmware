@@ -57,7 +57,7 @@
 #ifdef TINA2_BASIC
 
 #define MACHINE_NAME "TINA2BASIC"
-#define LCD_CONTRAST_140
+#define LCD_CONTRAST_180
 
 #else
 
