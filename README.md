@@ -18,6 +18,7 @@ In this fork, I did following changes:
 - enable the heat bed and temperature sensor. You can use the heat bed from TINA2S as example (https://www.weedo3d.com/fr-fr/products/weedo-3d-printer-accessory-hot-bed-for-tina2s). Only little soldering for the sensor is required
 - replace the custom status screen with an heat bed alternative one
 - increase the lcd contrast value
+- remap unused pin 3 ```X_MIN_PIN``` into ```FAN1_PIN``` to enable part cooling feature. You can use the pin as data signal and add an MOSFET trigger module to drive the fan with higher power (e.g. 12V)
 
 ## Product Version
 
