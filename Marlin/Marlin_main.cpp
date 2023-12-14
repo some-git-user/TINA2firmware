@@ -13991,7 +13991,7 @@ void setup() {
 	{
 		wtvar_gohome = 0;
 		(void)settings.save();
-		enqueue_and_echo_commands_P(PSTR("G28 Z F300\r\n\M18"));
+		enqueue_and_echo_commands_P(PSTR("G28 Z F300\r\n\\M18"));
 #if ENABLED(POWER_LOSS_RECOVERY)
 		card.removeJobRecoveryFile();
 #endif

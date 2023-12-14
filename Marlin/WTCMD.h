@@ -1,22 +1,23 @@
 /**
-* Copyright (C) 2019 WEEDO3D Perron
-*/
+ * Copyright (C) 2019 WEEDO3D Perron
+ */
 
 #ifndef WTCMD_H
 #define WTCMD_H
 
 #include "Marlin.h"
 
-#define SPARK_IDLE		0
-#define SPARK_PAUSED	1
-#define SPARK_PRINTING	2
-#define SPARK_LOST		3
+#define SPARK_IDLE 0
+#define SPARK_PAUSED 1
+#define SPARK_PRINTING 2
+#define SPARK_LOST 3
 
-#define HOST_WIIBUILDER	0
-#define HOST_SPARK		1
+#define HOST_WIIBUILDER 0
+#define HOST_SPARK 1
 
-enum WT_STATUS : char {
-	IDLE = 0, 
+enum WT_STATUS : char
+{
+	IDLE = 0,
 	PRINTING = 1,
 	PAUSE = 2,
 	ABORT = 3,
@@ -51,7 +52,7 @@ void wt_online_resume();
 
 void wt_online_cancel();
 
-uint8_t extractFront(const char* source, char* ident, char* valString);
+uint8_t extractFront(const char *source, char *ident, char *valString);
 
 uint8_t wt_get_hostmode(void);
 
@@ -68,4 +69,3 @@ void host_action_finish();
 void wt_loopaction(void);
 
 #endif
-

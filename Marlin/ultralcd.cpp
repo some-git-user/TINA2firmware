@@ -2169,7 +2169,7 @@ void _lcd_level_bed_get_z()
 	if (encoderPosition)
 	{
 		const float z = current_position[Z_AXIS] + float((int32_t)encoderPosition) * (MBL_Z_STEP);
-		line_to_z(constrain(z, -(LCD_PROBE_Z_RANGE)*0.5f, (LCD_PROBE_Z_RANGE)*0.5f));
+		line_to_z(constrain(z, -(LCD_PROBE_Z_RANGE) * 0.5f, (LCD_PROBE_Z_RANGE) * 0.5f));
 		lcdDrawUpdate = LCDVIEW_CALL_REDRAW_NEXT;
 		encoderPosition = 0;
 	}
@@ -4193,7 +4193,7 @@ void lcd_info_printer_menu()
 #if ENABLED(AUTO_BED_LEVELING_3POINT)
 	STATIC_ITEM(MSG_3POINT_LEVELING, true); // 3-Point Leveling
 #elif ENABLED(AUTO_BED_LEVELING_LINEAR)
-	STATIC_ITEM(MSG_LINEAR_LEVELING, true);	 // Linear Leveling
+	STATIC_ITEM(MSG_LINEAR_LEVELING, true); // Linear Leveling
 #elif ENABLED(AUTO_BED_LEVELING_BILINEAR)
 	STATIC_ITEM(MSG_BILINEAR_LEVELING, true); // Bi-linear Leveling
 #elif ENABLED(AUTO_BED_LEVELING_UBL)
@@ -6539,7 +6539,7 @@ void wt_sdcard_showpage()
 	if (wtvar_sdcard_filecount > 0 && wtvar_sdcard_pageid < wtvar_sdcard_pagecount)
 	{
 		uint8_t i, endpos;
-		if (wtvar_sdcard_filecount >= ((wtvar_sdcard_pageid + 1) * SDCARD_MENU_PAGE_ITEMS))
+		if (wtvar_sdcard_filecount >= static_cast<uint16_t>((wtvar_sdcard_pageid + 1) * SDCARD_MENU_PAGE_ITEMS))
 		{ // has 6 items
 			endpos = (wtvar_sdcard_pageid + 1) * SDCARD_MENU_PAGE_ITEMS;
 		}
