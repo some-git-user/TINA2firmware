@@ -54,10 +54,10 @@
 #define LED_PIN 13
 
 // Extruder0
-#define FAN_PIN 4       // IO pin. Buffer needed
+#define FAN_PIN 3       // remapping X_MIN_PIN to FAN_PIN. Start FAN with M106 S255. Stop with M106 S0.
 #define HEATER_0_PIN 10 // EXTRUDER 1
 #define TEMP_0_PIN 13   // ANALOG NUMBERING
-#define FAN1_PIN 3      // remapping X_MIN_PIN to FAN1_PIN. Start FAN1 with M106 P1 S255. Stop with M106 P1 S0.
+#define FAN1_PIN 4      // IO pin. Buffer needed
 
 // Heater Bed
 #define HEATER_BED_PIN 8 // BED
