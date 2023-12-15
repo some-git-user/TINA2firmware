@@ -751,9 +751,9 @@
  *   leveling in steps so you can manually adjust the Z height at each grid-point.
  *   With an LCD controller the process is guided step-by-step.
  */
-#define AUTO_BED_LEVELING_3POINT
+// #define AUTO_BED_LEVELING_3POINT
 // #define AUTO_BED_LEVELING_LINEAR
-// #define AUTO_BED_LEVELING_BILINEAR
+#define AUTO_BED_LEVELING_BILINEAR
 // #define AUTO_BED_LEVELING_UBL
 // #define MESH_BED_LEVELING
 
@@ -802,10 +802,10 @@
 #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
 // Set the boundaries for probing (where the probe can reach).
-// #define LEFT_PROBE_BED_POSITION MIN_PROBE_EDGE
-// #define RIGHT_PROBE_BED_POSITION (X_BED_SIZE - MIN_PROBE_EDGE)
-// #define FRONT_PROBE_BED_POSITION MIN_PROBE_EDGE
-// #define BACK_PROBE_BED_POSITION (Y_BED_SIZE - MIN_PROBE_EDGE)
+#define LEFT_PROBE_BED_POSITION (MIN_PROBE_EDGE)
+#define RIGHT_PROBE_BED_POSITION (X_BED_SIZE - MIN_PROBE_EDGE - 21)
+#define FRONT_PROBE_BED_POSITION (MIN_PROBE_EDGE + 2)
+#define BACK_PROBE_BED_POSITION (Y_BED_SIZE - MIN_PROBE_EDGE - 3)
 
 // Probe along the Y axis, advancing X after each column
 // #define PROBE_Y_FIRST

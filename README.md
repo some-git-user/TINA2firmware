@@ -19,6 +19,7 @@ In this fork, I did following changes:
 - replace the custom status screen with an heat bed alternative one
 - increase the lcd contrast value
 - remap unused pin 3 ```X_MIN_PIN``` into ```FAN1_PIN``` to enable part cooling feature. You can use the pin as data signal and add an MOSFET trigger module to drive the fan with higher power (e.g. 12V)
+- enable more precise bed leveling (Bilinear), that takes more measurement points but also more time
 
 ## Product Version
 
