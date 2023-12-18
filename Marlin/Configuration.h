@@ -545,9 +545,9 @@
  *      O-- FRONT --+
  *    (0,0)
  */
-#define X_PROBE_OFFSET_FROM_EXTRUDER 0 // X offset: -left  +right  [of the nozzle]
-#define Y_PROBE_OFFSET_FROM_EXTRUDER 0 // Y offset: -front +behind [the nozzle]
-#define Z_PROBE_OFFSET_FROM_EXTRUDER 0 // Z offset: -below +above  [the nozzle]
+#define X_PROBE_OFFSET_FROM_EXTRUDER 21 // X offset: -left  +right  [of the nozzle]
+#define Y_PROBE_OFFSET_FROM_EXTRUDER 3  // Y offset: -front +behind [the nozzle]
+#define Z_PROBE_OFFSET_FROM_EXTRUDER 0  // Z offset: -below +above  [the nozzle]
 
 // Certain types of probes need to stay away from edges
 #define MIN_PROBE_EDGE 2
@@ -802,10 +802,10 @@
 #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
 // Set the boundaries for probing (where the probe can reach).
-#define LEFT_PROBE_BED_POSITION (MIN_PROBE_EDGE)
-#define RIGHT_PROBE_BED_POSITION (X_BED_SIZE - MIN_PROBE_EDGE - 21)
-#define FRONT_PROBE_BED_POSITION (MIN_PROBE_EDGE + 2)
-#define BACK_PROBE_BED_POSITION (Y_BED_SIZE - MIN_PROBE_EDGE - 3)
+#define LEFT_PROBE_BED_POSITION (X_PROBE_OFFSET_FROM_EXTRUDER + MIN_PROBE_EDGE)
+#define RIGHT_PROBE_BED_POSITION (X_BED_SIZE - MIN_PROBE_EDGE)
+#define FRONT_PROBE_BED_POSITION (Y_PROBE_OFFSET_FROM_EXTRUDER + MIN_PROBE_EDGE)
+#define BACK_PROBE_BED_POSITION (Y_BED_SIZE - Y_PROBE_OFFSET_FROM_EXTRUDER - MIN_PROBE_EDGE)
 
 // Probe along the Y axis, advancing X after each column
 // #define PROBE_Y_FIRST
@@ -895,8 +895,8 @@
 // @section homing
 
 // Homing speeds (mm/m)
-#define HOMING_FEEDRATE_XY (3000)
-#define HOMING_FEEDRATE_Z (500)
+#define HOMING_FEEDRATE_XY (4000)
+#define HOMING_FEEDRATE_Z (3000)
 
 //=============================================================================
 //============================= Additional Features ===========================
